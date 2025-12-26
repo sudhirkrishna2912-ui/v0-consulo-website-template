@@ -1,9 +1,12 @@
 "use client"
 
+import { useState } from "react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 
 export default function WorkPage() {
+  const [activeFilter, setActiveFilter] = useState("All Projects")
+
   const caseStudies = [
     {
       slug: "chettinad-handlooms",
@@ -91,6 +94,13 @@ export default function WorkPage() {
     },
   ]
 
+  const filterOptions = ["All Projects", "Global Expansion", "Digital", "Engineering"]
+
+  const filteredStudies =
+    activeFilter === "All Projects"
+      ? caseStudies
+      : caseStudies.filter((s) => s.category.toLowerCase().includes(activeFilter.toLowerCase()))
+
   return (
     <main className="bg-background text-foreground">
       {/* Header */}
@@ -105,25 +115,26 @@ export default function WorkPage() {
       {/* Filter Section */}
       <div className="max-w-7xl mx-auto px-6 py-8 border-b border-border">
         <div className="flex flex-wrap gap-2">
-          <button className="px-6 py-2 bg-primary text-primary-foreground rounded-full text-sm font-semibold">
-            All Projects
-          </button>
-          <button className="px-6 py-2 bg-muted text-foreground rounded-full text-sm hover:bg-muted/80 transition">
-            Global Expansion
-          </button>
-          <button className="px-6 py-2 bg-muted text-foreground rounded-full text-sm hover:bg-muted/80 transition">
-            Digital
-          </button>
-          <button className="px-6 py-2 bg-muted text-foreground rounded-full text-sm hover:bg-muted/80 transition">
-            Engineering
-          </button>
+          {filterOptions.map((option) => (
+            <button
+              key={option}
+              onClick={() => setActiveFilter(option)}
+              className={`px-6 py-2 rounded-full text-sm font-semibold transition ${
+                activeFilter === option
+                  ? "bg-primary text-primary-foreground"
+                  : "bg-muted text-foreground hover:bg-muted/80"
+              }`}
+            >
+              {option}
+            </button>
+          ))}
         </div>
       </div>
 
       {/* Case Studies Grid */}
       <div className="max-w-7xl mx-auto px-6 py-16">
         <div className="grid gap-12">
-          {caseStudies.map((study, index) => (
+          {filteredStudies.map((study, index) => (
             <Link key={study.slug} href={`/work/${study.slug}`}>
               <div
                 className={`grid md:grid-cols-2 gap-12 items-center py-12 border-b border-border hover:border-accent transition group cursor-pointer ${index % 2 === 1 ? "md:direction-rtl" : ""}`}

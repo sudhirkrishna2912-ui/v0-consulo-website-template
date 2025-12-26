@@ -122,9 +122,7 @@ export default function ServicesPage() {
                   ))}
                 </div>
 
-                <Button className="w-full bg-primary text-primary-foreground hover:bg-primary/90">
-                  View Details →
-                </Button>
+                <Button className="w-full bg-primary text-primary-foreground hover:bg-primary/90">Learn More →</Button>
               </div>
             </Link>
           ))}
@@ -138,9 +136,11 @@ export default function ServicesPage() {
           <p className="text-lg text-primary-foreground/90 mb-8">
             Schedule a consultation with our expert team to explore how RMG can drive your growth.
           </p>
-          <Button size="lg" className="bg-accent text-accent-foreground hover:bg-accent/90">
-            Schedule Consultation
-          </Button>
+          <Link href="/contact">
+            <Button size="lg" className="bg-accent text-accent-foreground hover:bg-accent/90">
+              Schedule Consultation
+            </Button>
+          </Link>
         </div>
       </div>
     </main>

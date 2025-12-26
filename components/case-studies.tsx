@@ -1,5 +1,7 @@
 "use client"
 
+import Link from "next/link"
+
 export default function CaseStudies() {
   const studies = [
     {
@@ -54,12 +56,11 @@ export default function CaseStudies() {
                   <p className="font-semibold">
                     Result: <span className="text-accent">{study.result}</span>
                   </p>
-                  <a
-                    href="#"
-                    className="inline-flex items-center gap-2 text-accent hover:gap-3 transition font-semibold"
-                  >
-                    Read Full Case Study →
-                  </a>
+                  <Link href={`/work/${study.title.toLowerCase().replace(/\s+/g, "-")}`}>
+                    <span className="inline-flex items-center gap-2 text-accent hover:gap-3 transition font-semibold cursor-pointer hover:text-accent/80">
+                      Read Full Case Study →
+                    </span>
+                  </Link>
                 </div>
               </div>
             </div>

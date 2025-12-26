@@ -1,9 +1,13 @@
 "use client"
 
+import { useState } from "react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 
 export default function BlogPage() {
+  const [activeCategory, setActiveCategory] = useState("All")
+  const [currentPage, setCurrentPage] = useState(1)
+
   const articles = [
     {
       slug: "market-entry-strategy",
@@ -75,6 +79,18 @@ export default function BlogPage() {
 
   const categories = ["All", "Global Expansion", "Technology", "Branding", "Analytics", "Engineering", "Marketing"]
 
+  const filteredArticles = activeCategory === "All" ? articles : articles.filter((a) => a.category === activeCategory)
+
+  const articlesPerPage = 6
+  const totalPages = Math.ceil(filteredArticles.length / articlesPerPage)
+  const startIdx = (currentPage - 1) * articlesPerPage
+  const displayedArticles = filteredArticles.slice(startIdx, startIdx + articlesPerPage)
+
+  const handleCategoryClick = (category: string) => {
+    setActiveCategory(category)
+    setCurrentPage(1)
+  }
+
   return (
     <main className="bg-background text-foreground">
       {/* Header */}
@@ -93,7 +109,13 @@ export default function BlogPage() {
           <p className="text-muted-foreground mb-6">
             Get the latest insights and resources delivered to your inbox every week.
           </p>
-          <form className="flex gap-2">
+          <form
+            className="flex gap-2"
+            onSubmit={(e) => {
+              e.preventDefault()
+              alert("Thank you for subscribing!")
+            }}
+          >
             <input
               type="email"
               placeholder="Enter your email"
@@ -108,11 +130,14 @@ export default function BlogPage() {
       {/* Filter */}
       <div className="max-w-7xl mx-auto px-6 py-8 border-b border-border">
         <div className="flex flex-wrap gap-2">
-          {categories.map((cat, idx) => (
+          {categories.map((cat) => (
             <button
-              key={idx}
+              key={cat}
+              onClick={() => handleCategoryClick(cat)}
               className={`px-6 py-2 rounded-full text-sm font-semibold transition ${
-                idx === 0 ? "bg-primary text-primary-foreground" : "bg-muted text-foreground hover:bg-muted/80"
+                activeCategory === cat
+                  ? "bg-primary text-primary-foreground"
+                  : "bg-muted text-foreground hover:bg-muted/80"
               }`}
             >
               {cat}
@@ -149,7 +174,7 @@ export default function BlogPage() {
       {/* Article Grid */}
       <div className="max-w-7xl mx-auto px-6 py-16">
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {articles.slice(1).map((article) => (
+          {displayedArticles.map((article) => (
             <Link key={article.slug} href={`/blog/${article.slug}`}>
               <div className="h-full flex flex-col group cursor-pointer">
                 {/* Image */}
@@ -182,11 +207,30 @@ export default function BlogPage() {
       {/* Pagination */}
       <div className="max-w-7xl mx-auto px-6 py-12 border-t border-border">
         <div className="flex items-center justify-center gap-2">
-          <Button variant="outline">Previous</Button>
-          <Button className="bg-primary text-primary-foreground">1</Button>
-          <Button variant="outline">2</Button>
-          <Button variant="outline">3</Button>
-          <Button variant="outline">Next</Button>
+          <Button
+            variant="outline"
+            onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
+            disabled={currentPage === 1}
+          >
+            Previous
+          </Button>
+          {[...Array(totalPages)].map((_, i) => (
+            <Button
+              key={i + 1}
+              onClick={() => setCurrentPage(i + 1)}
+              className={i + 1 === currentPage ? "bg-primary text-primary-foreground" : ""}
+              variant={i + 1 === currentPage ? "default" : "outline"}
+            >
+              {i + 1}
+            </Button>
+          ))}
+          <Button
+            variant="outline"
+            onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
+            disabled={currentPage === totalPages}
+          >
+            Next
+          </Button>
         </div>
       </div>
 

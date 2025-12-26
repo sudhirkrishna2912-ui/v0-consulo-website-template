@@ -1,8 +1,11 @@
 "use client"
 
+import { useState } from "react"
 import Link from "next/link"
 
 export default function TestimonialsPage() {
+  const [activeCategory, setActiveCategory] = useState("All")
+
   const testimonials = [
     {
       quote:
@@ -11,6 +14,7 @@ export default function TestimonialsPage() {
       role: "CEO, Global Ventures Ltd",
       company: "International Expansion Client",
       industry: "Manufacturing",
+      category: "Global Expansion",
       rating: 5,
     },
     {
@@ -20,6 +24,7 @@ export default function TestimonialsPage() {
       role: "Founder, Tech Innovations",
       company: "Technology Startup",
       industry: "Software Development",
+      category: "Digital",
       rating: 5,
     },
     {
@@ -29,6 +34,7 @@ export default function TestimonialsPage() {
       role: "Managing Director, Indian Exports Co.",
       company: "Export Business",
       industry: "Trade & Logistics",
+      category: "Global Expansion",
       rating: 5,
     },
     {
@@ -38,6 +44,7 @@ export default function TestimonialsPage() {
       role: "VP Marketing, RetailPro",
       company: "Retail Network",
       industry: "Retail & E-Commerce",
+      category: "Digital",
       rating: 5,
     },
     {
@@ -47,6 +54,7 @@ export default function TestimonialsPage() {
       role: "Managing Director, Engineering Solutions",
       company: "Infrastructure Contractor",
       industry: "Engineering & Construction",
+      category: "Engineering",
       rating: 5,
     },
     {
@@ -56,6 +64,7 @@ export default function TestimonialsPage() {
       role: "Operations Director, Retail Chain",
       company: "Multi-Store Retailer",
       industry: "Retail Operations",
+      category: "Data & Analytics",
       rating: 5,
     },
     {
@@ -65,6 +74,7 @@ export default function TestimonialsPage() {
       role: "Owner, Health Foods Co.",
       company: "F&B Business",
       industry: "Food & Beverage",
+      category: "Digital",
       rating: 5,
     },
     {
@@ -74,18 +84,22 @@ export default function TestimonialsPage() {
       role: "Founder, Quick Services",
       company: "Service Business",
       industry: "Technology Solutions",
+      category: "Technology",
       rating: 5,
     },
   ]
 
   const categories = [
     { name: "All", count: testimonials.length },
-    { name: "Global Expansion", count: 2 },
-    { name: "Digital", count: 3 },
-    { name: "Engineering", count: 1 },
-    { name: "Data & Analytics", count: 1 },
-    { name: "Technology", count: 1 },
+    { name: "Global Expansion", count: testimonials.filter((t) => t.category === "Global Expansion").length },
+    { name: "Digital", count: testimonials.filter((t) => t.category === "Digital").length },
+    { name: "Engineering", count: testimonials.filter((t) => t.category === "Engineering").length },
+    { name: "Data & Analytics", count: testimonials.filter((t) => t.category === "Data & Analytics").length },
+    { name: "Technology", count: testimonials.filter((t) => t.category === "Technology").length },
   ]
+
+  const filteredTestimonials =
+    activeCategory === "All" ? testimonials : testimonials.filter((t) => t.category === activeCategory)
 
   return (
     <main className="bg-background text-foreground">
@@ -101,11 +115,14 @@ export default function TestimonialsPage() {
       {/* Filter */}
       <div className="max-w-7xl mx-auto px-6 py-8 border-b border-border">
         <div className="flex flex-wrap gap-2">
-          {categories.map((cat, idx) => (
+          {categories.map((cat) => (
             <button
-              key={idx}
+              key={cat.name}
+              onClick={() => setActiveCategory(cat.name)}
               className={`px-6 py-2 rounded-full text-sm font-semibold transition ${
-                idx === 0 ? "bg-primary text-primary-foreground" : "bg-muted text-foreground hover:bg-muted/80"
+                activeCategory === cat.name
+                  ? "bg-primary text-primary-foreground"
+                  : "bg-muted text-foreground hover:bg-muted/80"
               }`}
             >
               {cat.name} ({cat.count})
@@ -117,7 +134,7 @@ export default function TestimonialsPage() {
       {/* Testimonials Grid */}
       <div className="max-w-7xl mx-auto px-6 py-16">
         <div className="grid md:grid-cols-2 gap-8">
-          {testimonials.map((testimonial, idx) => (
+          {filteredTestimonials.map((testimonial, idx) => (
             <div
               key={idx}
               className="p-8 bg-muted/30 rounded-lg border border-border hover:border-accent transition group"
